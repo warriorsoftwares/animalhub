@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masters Quizzes Pro - Certificate Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .test-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .preview-box {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            max-width: 640px;
+            width: 100%;
+        }
+
+        canvas {
+            width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            background-color: #eaeaea;
+        }
+
+        .btn-download {
+            margin-top: 20px;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #0d47a1;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-download:hover {
+            background-color: #0a357a;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. Input Controls for Live Testing -->
+    <div class="test-panel">
+        <h3 style="margin-top:0; color:#0d47a1;">📝 Live Certificate Tester</h3>
+        
+        <div class="input-group">
+            <label for="studentName">Student Name:</label>
+            <input type="text" id="studentName" value="Alex Mercer" oninput="updatePreview()">
+        </div>
+
+        <div class="input-group">
+            <label for="quizName">Quiz/Module Name:</label>
+            <input type="text" id="quizName" value="JavaScript Mastery Challenge" oninput="updatePreview()">
+        </div>
+    </div>
+
+    <!-- 2. Preview Canvas and Download Interface -->
+    <div class="preview-box">
+        <h3 style="margin-top:0; color:#555;">👀 Certificate Preview</h3>
+        
+        <canvas id="certificateCanvas" width="1920" height="1080"></canvas>
+        
+        <button class="btn-download" onclick="downloadCertificate()">📥 Download Certificate</button>
+    </div>
+
+    <!-- 3. Dynamic Drawing JavaScript -->
+    <script>
+        const canvas = document.getElementById('certificateCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Create the image element for the certificate background template
+        const baseTemplate = new Image();
+        baseTemplate.crossOrigin = "anonymous"; 
+        
+        // This is a reliable open placeholder image background for template testing
+        baseTemplate.src = 'https://unsplash.com'; 
+
+        // Draw preview as soon as the background image finishes loading
+        baseTemplate.onload = function() {
+            updatePreview();
+        };
+
+        function updatePreview() {
+            // Get values fresh from the input fields
+            const nameInput = document.getElementById('studentName').value;
+            const quizInput = document.getElementById('quizName').value;
+            
+            // Get today's system date dynamically formatted
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            const todayDate = new Date().toLocaleDateString("en-US", options);
+
+            // Clear the old frame and draw the baseline background template
+            ctx.drawImage(baseTemplate, 0, 0, canvas.width, canvas.height);
+
+            // Add Decorative Certificate Borders & Overlays manually via code for the test mockup
+            ctx.strokeStyle = '#0d47a1';
+            ctx.lineWidth = 30;
+            ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+            
+            ctx.strokeStyle = '#d4af37'; // Gold inner accent line
+            ctx.lineWidth = 6;
+            ctx.strokeRect(70, 70, canvas.width - 140, canvas.height - 140);
+
+            // --- DRAW TEXT OVERLAYS ---
+
+            // Main Branding Title
+            ctx.font = "bold 42px sans-serif";
+            ctx.fillStyle = "#0d47a1";
+            ctx.textAlign = "center";
+            ctx.fillText("MASTERS QUIZZES PRO", 960, 220);
+
+            // Document Identification Subtitle
+            ctx.font = "bold 64px 'Times New Roman', serif";
+            ctx.fillStyle = "#222222";
+            ctx.fillText("CERTIFICATE OF ACHIEVEMENT", 960, 360);
+
+            // Decorative Ribbon Line
+            ctx.font = "italic 32px Georgia, serif";
+            ctx.fillStyle = "#666666";
+            ctx.fillText("This is officially awarded to", 960, 460);
+
+            // DYNAMIC FIELD: Student Name
+            ctx.font = "bold italic 72px 'Times New Roman', serif";
+            ctx.fillStyle = "#1a237e";
+            ctx.fillText(nameInput, 960, 580);
+
+            // Explanatory Text Context
+            ctx.font = "30px sans-serif";
+            ctx.fillStyle = "#444444";
+            ctx.fillText("for successfully completing and passing the online evaluation module:", 960, 680);
+
+            // DYNAMIC FIELD: Quiz Name
+            ctx.font = "bold 40px sans-serif";
+            ctx.fillStyle = "#d4af37"; // Golden highlighted color
+            ctx.fillText(`[ ${quizInput} ]`, 960, 760);
+
+            // Left Side: Date Frame Data
+            ctx.font = "26px sans-serif";
+            ctx.fillStyle = "#555555";
+            ctx.textAlign = "left";
+            ctx.fillText(`Date: ${todayDate}`, 180, 930);
+
+            // Right Side: Secure Program Identity Verification Link Field
+            ctx.textAlign = "right";
+            ctx.fillStyle = "#0d47a1";
+            ctx.font = "bold 24px sans-serif";
+            ctx.fillText("Verification Link:", 1740, 910);
+            ctx.fillStyle = "#555555";
+            ctx.font = "22px monospace";
+            ctx.fillText("warriorsoftwares.github.io/termtestapp/", 1740, 945);
+        }
+
+        // Handles local machine processing generation and immediate download call
+        function downloadCertificate() {
+            const studentFilename = document.getElementById('studentName').value.replace(/\s+/g, '-');
+            const link = document.createElement('a');
+            link.download = `Certificate-${studentFilename}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+    </script>
+</body>
+</html>
